@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dataflow-window-experiments/dataflow-window-experiments.iml" filepath="$PROJECT_DIR$/dataflow-window-experiments/dataflow-window-experiments.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/swarm-dataflow-experiments.iml" filepath="$PROJECT_DIR$/.idea/swarm-dataflow-experiments.iml" />
+    </modules>
+  </component>
+</project>
