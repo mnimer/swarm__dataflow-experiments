@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="StarterPipeline" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="window-experiment" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.mikenimer.swarm.windows.StarterPipeline" />
     <module name="dataflow-window-experiments" />
     <option name="PROGRAM_PARAMETERS" value="--project=mikenimer-playground --runner=DirectRunner --topic=dataflow-window-experiments" />

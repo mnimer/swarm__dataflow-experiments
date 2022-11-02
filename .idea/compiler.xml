@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="dataflow-window-experiments" />
+        <module name="dataflow-global-sequence-experiments" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dataflow-global-sequence-experiments" target="1.8" />
       <module name="dataflow-window-experiments" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -15,20 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mikenimer.swarm.windows;
+package com.mikenimer.swarm.globalsequence;
 
+import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.windowing.FixedWindows;
-import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +42,6 @@ public class StarterPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
 
     public interface JobOptions extends GcpOptions {
-
         String getTopic();
         void setTopic(String value);
     }
@@ -69,14 +65,20 @@ public class StarterPipeline {
             }
         }))
 
-        .apply("window", Window.<KV<String, PubsubMessage>>into(FixedWindows.of(Duration.standardSeconds(5))))
-        .apply("group", GroupByKey.create());
+                /**
+        .apply("window", Window.<KV<String, PubsubMessage>>into(FixedWindows.of(Duration.standardSeconds(5)))
+                .triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
+                        .plusDelayOf(Duration.standardSeconds(5))))
+                .withAllowedLateness(Duration.standardSeconds(10))
+                .discardingFiredPanes())
+        .apply("group", GroupByKey.create())
+                 **/
 
-        //.apply("Debug Logging", ParDo.of(new DebugWindowFn()));
+
+        .apply("Debug Logging", ParDo.of(new DebugGlobalWindowFn()));
 
         p.run();
     }
-
 
 
 }

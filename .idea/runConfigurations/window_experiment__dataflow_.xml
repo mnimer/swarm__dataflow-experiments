@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="StarterPipeline (dataflow)" type="Application" factoryName="Application">
+  <configuration default="false" name="window-experiment (dataflow)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.mikenimer.swarm.windows.StarterPipeline" />
     <module name="dataflow-window-experiments" />
-    <option name="PROGRAM_PARAMETERS" value="--project=mikenimer-playground --runner=DataFlowRunner --stagingLocation=gs://mikenimer-playground_dataflow/temp --topic=dataflow-window-experiments" />
+    <option name="PROGRAM_PARAMETERS" value="--project=mikenimer-playground --region=us-central1 --runner=DataFlowRunner --stagingLocation=gs://mikenimer-playground_dataflow/temp --topic=dataflow-window-experiments" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.mikenimer.swarm.windows.*" />

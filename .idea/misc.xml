@@ -4,6 +4,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/dataflow-window-experiments/pom.xml" />
+        <option value="$PROJECT_DIR$/dataflow-global-sequence-experiments/pom.xml" />
       </list>
     </option>
   </component>
