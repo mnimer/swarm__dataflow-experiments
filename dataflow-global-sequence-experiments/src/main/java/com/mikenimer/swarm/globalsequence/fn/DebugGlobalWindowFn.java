@@ -1,5 +1,6 @@
 package com.mikenimer.swarm.globalsequence.fn;
 
+import com.mikenimer.swarm.globalsequence.StarterPipeline;
 import com.mikenimer.swarm.globalsequence.models.CalculatedBook;
 import com.mikenimer.swarm.globalsequence.models.PendingTrade;
 import org.apache.beam.sdk.coders.MapCoder;
@@ -25,11 +26,12 @@ public class DebugGlobalWindowFn extends DoFn<KV<String, PubsubMessage>, Calcula
     private static final Logger log = LoggerFactory.getLogger(DebugGlobalWindowFn.class);
 
     @StateId("lastWin")
-    private final StateSpec<ValueState<Map<String, CalculatedBook>>> indexSpec = StateSpecs.value(MapCoder.of(StringUtf8Coder.of(), SerializableCoder.of(CalculatedBook.class)));
+    private final StateSpec<ValueState<CalculatedBook>> indexSpec = StateSpecs.value(SerializableCoder.of(CalculatedBook.class));
 
     @ProcessElement
-    public void process(ProcessContext c, BoundedWindow window, @StateId("lastWin") ValueState<Map<String, CalculatedBook>> cache ) throws Exception {
+    public void process(ProcessContext c, BoundedWindow window, @StateId("lastWin") ValueState<CalculatedBook> cache ) throws Exception {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS");
+        StarterPipeline.JobOptions options = c.getPipelineOptions().as(StarterPipeline.JobOptions.class);
 
         //extract data from key
         KV<String, PubsubMessage> elem = c.element();
@@ -38,60 +40,64 @@ public class DebugGlobalWindowFn extends DoFn<KV<String, PubsubMessage>, Calcula
         Long seq = Long.valueOf(pubsubMessage.getAttribute("sequence"));
         Long tradeDate = Long.parseLong(pubsubMessage.getAttribute("publishTs"));
         Double price = 0.0; // todo: get from payload
-        // System.out.println(String.format("Channel=%s Seq=%s | thread=%s ts=%s", channel, seq, Thread.currentThread().getId(), String.valueOf(System.currentTimeMillis())));
+        // log.info(String.format("Channel=%s Seq=%s | thread=%s ts=%s", channel, seq, Thread.currentThread().getId(), String.valueOf(System.currentTimeMillis())));
 
 
 
         //GlobalWindowCache globalWindowCache = new GlobalWindowCache(channel, tradeDate, seq, price);
 
         Long lastValidSeq = null;
-        Map<String, CalculatedBook> _cache = cache.read();
-        if( _cache == null){
-            //init cache
-            _cache = new HashMap<>();
-        }
+        CalculatedBook lastBook = cache.read();
 
-        CalculatedBook calculatedBook;
+        CalculatedBook currentBook = null;
         //first entry
-        if(!_cache.containsKey(channel)){
-            System.out.println(String.format("Add channel '%s' to cache ", channel));
-            calculatedBook = new CalculatedBook(channel, seq, tradeDate, price);
-            _cache.put(channel, calculatedBook);
-        }else{
-            CalculatedBook lastBook = _cache.get(channel);
-            //if we are the next book, great - calculated the next book value
-            if( lastBook.getSequence()+1 == seq && lastBook.getPendingTrades().size() == 0) {
-                //add price
-                System.out.println(String.format("calculate single book | channel '%s' seq '%s' | thread=%s ts=%s", channel, seq, Thread.currentThread().getId(), System.currentTimeMillis()));
+        if( lastBook == null ){
+            log.info(String.format("Add channel '%s' to cache ", channel));
+            currentBook = new CalculatedBook(channel, seq, tradeDate, price);
+            cache.write(currentBook);
+        }else {
+            if( seq >= lastBook.getSequence() ) { //If a late arriving message arrives after we calculate the book, skip it.
+                //if we are the next book, great - calculated the next book value
+                if (lastBook.getSequence() + 1 == seq && lastBook.getPendingTrades().size() == 0) {
+                    //add price
+                    log.info(String.format("calculate single book | channel '%s' seq '%s' | thread=%s ts=%s", channel, seq, Thread.currentThread().getId(), System.currentTimeMillis()));
 
-                calculatedBook = getCalculatedBook(channel, seq, tradeDate, price, lastBook);
-                _cache.put(channel, calculatedBook);
-            }else{
-                List<PendingTrade> pendingTrades = lastBook.getPendingTrades();
-                boolean isInSeq = false;
+                    currentBook = getCalculatedBook(channel, seq, tradeDate, price, lastBook);
+                    cache.write(currentBook);
+                } else {
+                    List<PendingTrade> pendingTrades = lastBook.getPendingTrades();
+                    boolean isInSeq = false;
 
-                //compare all sequence numbers in pending trades list with this
-                List<Long> pendingSeq = pendingTrades.stream().map((v)->v.getSequence()).collect(Collectors.toList());
-                pendingSeq.add(lastBook.getSequence());
-                isInSeq = checkSequence(pendingSeq, seq);
+                    //compare all sequence numbers in pending trades list with this
+                    List<Long> pendingSeq = pendingTrades.stream().map((v) -> v.getSequence()).collect(Collectors.toList());
+                    pendingSeq.add(lastBook.getSequence());
+                    isInSeq = checkSequence(pendingSeq, seq);
 
 
-                if(isInSeq) {
-                    System.out.println(String.format("calculate pending book | channel '%s' seq '%s' | pending=%s | thread=%s ts=%s", channel, seq, pendingSeq.stream().sorted().collect(Collectors.toList()), Thread.currentThread().getId(), System.currentTimeMillis()));
+                    if (isInSeq) {
+                        log.info(String.format("calculate pending book | channel '%s' seq '%s' | pending=%s | thread=%s ts=%s", channel, seq, pendingSeq.stream().sorted().collect(Collectors.toList()), Thread.currentThread().getId(), System.currentTimeMillis()));
 
-                    //todo: add calculate price logic
-                    calculatedBook = getCalculatedBook(channel, seq, tradeDate, price, lastBook);
-                    _cache.put(channel, calculatedBook);
-                }else{
-                    //System.out.println(String.format("Out of sequence | last=%s | putting channel '%s' seq '%s' in cache", lastBook.getSequence(), channel, seq));
-                    // Not in sequence, add trade to the pending trades cache and wait.
-                    lastBook.addTrade(new PendingTrade(channel, seq, tradeDate, price, pubsubMessage.getPayload()));
-                    _cache.put(channel, lastBook);
+                        //todo: add calculate price logic
+                        currentBook = getCalculatedBook(channel, seq, tradeDate, price, lastBook);
+                        cache.write(currentBook);
+                    } else if (lastBook.getPendingTrades().size() > 1000) {
+                        log.warn(String.format("Queue size has reached 1000, pulling data from cassandra | channel=%s | %s", channel, pendingSeq.stream().sorted().collect(Collectors.toList())));
+                        //TODO: our pending trades queue is getting to large, the missing sequence might be lost. Time to go back to cassandra
+                        //todo: calculate last book, after save to cache, with the data from cassandra
+                        Thread.sleep(100); //simulate call to query cassandra and run calc
+                        currentBook = getCalculatedBook(channel, seq, tradeDate, price, lastBook);
+                        cache.write(currentBook);
+                    } else {
+                        //log.info(String.format("Out of sequence | last=%s | putting channel '%s' seq '%s' in cache", lastBook.getSequence(), channel, seq));
+                        // Out of sequence, add trade to the pending trades cache and wait.
+                        lastBook.addTrade(new PendingTrade(channel, seq, tradeDate, price, pubsubMessage.getPayload()));
+                        cache.write(lastBook);
+                    }
                 }
             }
         }
 
-        cache.write(_cache);
+        //cache.write(_cache);
 
         //Thread.sleep(500);
     }
@@ -111,7 +117,7 @@ public class DebugGlobalWindowFn extends DoFn<KV<String, PubsubMessage>, Calcula
             if( last == null || last+1 == s){
                 last = s;
             }else{
-                //System.out.println(String.format("missing %s | %s", String.valueOf(last+1), pendingSeq.toString()));
+                //log.info(String.format("missing %s | %s", String.valueOf(last+1), pendingSeq.toString()));
                 return false;
             }
         }

@@ -22,9 +22,12 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
+import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.Reshuffle;
 import org.apache.beam.sdk.values.KV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +47,7 @@ public class StarterPipeline {
     public interface JobOptions extends GcpOptions {
         String getTopic();
         void setTopic(String value);
+
     }
 
 
@@ -64,6 +68,7 @@ public class StarterPipeline {
                 c.output( KV.of(c.element().getAttribute("groupKey"), c.element()) );
             }
         }))
+        .apply("reshuffle", Reshuffle.of())
 
                 /**
         .apply("window", Window.<KV<String, PubsubMessage>>into(FixedWindows.of(Duration.standardSeconds(5)))

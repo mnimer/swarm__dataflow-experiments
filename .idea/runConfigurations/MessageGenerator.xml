@@ -2,7 +2,7 @@
   <configuration default="false" name="MessageGenerator" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.mikenimer.swarm.windows.MessageGenerator" />
     <module name="dataflow-window-experiments" />
-    <option name="PROGRAM_PARAMETERS" value="--project=mikenimer-playground --topic=dataflow-window-experiments --delay=500 --groups=c1,c2 --payload=&quot;TemplateId: 49 MessageSize:88 Message:  | 60=20221024-13:25:41.793000000 | 5799=10001001 | 268=2 | 270_0=0.000733875 | 271_0=10359 | 48_0=481 | 83_0=2845994006 | 5796_0=20221024 | 731_0=11111010 | 279_0=2 | 269_0=W | 270_1=0.000819462 | 271_1=7530 | 48_1=896 | 83_1=3554276718 | 5796_1=20221024 | 731_1=01010110 | 279_1=5 | 269_1=6&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="--project=mikenimer-playground --topic=dataflow-window-experiments --delay=10 --groups=c1,c2 --payload=&quot;TemplateId: 49 MessageSize:88 Message:  | 60=20221024-13:25:41.793000000 | 5799=10001001 | 268=2 | 270_0=0.000733875 | 271_0=10359 | 48_0=481 | 83_0=2845994006 | 5796_0=20221024 | 731_0=11111010 | 279_0=2 | 269_0=W | 270_1=0.000819462 | 271_1=7530 | 48_1=896 | 83_1=3554276718 | 5796_1=20221024 | 731_1=01010110 | 279_1=5 | 269_1=6&quot;" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.mikenimer.swarm.windows.*" />
