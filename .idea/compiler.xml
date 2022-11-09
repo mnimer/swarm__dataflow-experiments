@@ -8,9 +8,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="dataflow-window-experiments" />
         <module name="dataflow-global-sequence-experiments" />
+        <module name="dataflow-create-bq-tables-bug" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dataflow-create-bq-tables-bug" target="1.8" />
       <module name="dataflow-global-sequence-experiments" target="1.8" />
       <module name="dataflow-window-experiments" target="1.8" />
     </bytecodeTargetLevel>
