@@ -1,15 +1,16 @@
 package com.mikenimer.swarm.globalsequence.models;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
-public class PendingTrade implements Serializable {
+public class PendingTrade implements Serializable, Comparable {
     String channel;
     Long sequence;
     Long tradeDate;
-    Double price;
+    BigDecimal price;
     byte[] payload;
 
-    public PendingTrade(String channel, Long sequence, Long tradeDate, Double price, byte[] payload) {
+    public PendingTrade(String channel, Long sequence, Long tradeDate, BigDecimal price, byte[] payload) {
         this.channel = channel;
         this.sequence = sequence;
         this.tradeDate = tradeDate;
@@ -47,5 +48,11 @@ public class PendingTrade implements Serializable {
 
     public void setPayload(byte[] payload) {
         this.payload = payload;
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        return this.sequence.compareTo(((PendingTrade)o).getSequence());
     }
 }

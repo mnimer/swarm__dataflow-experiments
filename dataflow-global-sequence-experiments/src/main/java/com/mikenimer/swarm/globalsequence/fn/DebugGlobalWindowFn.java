@@ -16,6 +16,7 @@ import org.apache.beam.sdk.values.KV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class DebugGlobalWindowFn extends DoFn<KV<String, PubsubMessage>, Calcula
         PubsubMessage pubsubMessage = elem.getValue();
         Long seq = Long.valueOf(pubsubMessage.getAttribute("sequence"));
         Long tradeDate = Long.parseLong(pubsubMessage.getAttribute("publishTs"));
-        Double price = 0.0; // todo: get from payload
+        BigDecimal price = new BigDecimal(0.0); // todo: get from payload
         // log.info(String.format("Channel=%s Seq=%s | thread=%s ts=%s", channel, seq, Thread.currentThread().getId(), String.valueOf(System.currentTimeMillis())));
 
 
@@ -102,9 +103,9 @@ public class DebugGlobalWindowFn extends DoFn<KV<String, PubsubMessage>, Calcula
         //Thread.sleep(500);
     }
 
-    private static CalculatedBook getCalculatedBook(String channel, Long seq, Long tradeDate, Double price, CalculatedBook lastBook) {
+    private static CalculatedBook getCalculatedBook(String channel, Long seq, Long tradeDate, BigDecimal price, CalculatedBook lastBook) {
         CalculatedBook calculatedBook;
-        calculatedBook = new CalculatedBook(channel, seq, tradeDate, lastBook.getPrice() + price);
+        calculatedBook = new CalculatedBook(channel, seq, tradeDate, lastBook.getPrice().add(price));
         return calculatedBook;
     }
 

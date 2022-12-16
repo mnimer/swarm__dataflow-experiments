@@ -1,0 +1,113 @@
+Maximum tables.insert requests per second	10 requests
+Your project can make up to 10 tables.insert requests per second. The tables.insert method creates a new, empty table in a dataset. The limit includes SQL statements that create tables, such as CREATE TABLE and queries that write results to destination tables.
+
+
+Maximum number of API requests per second per user per method	100 requests
+A user can make up to 100 API requests per second to an API method. If a user makes more than 100 requests per second to a method, then throttling can occur. This limit does not apply to streaming inserts.
+
+
+===========
+
+
+20/s - 5996
+
+mikenimer-playground:create_bug_2.test-table-1 | thread=20
+Nov 16, 2022 12:48:07 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+....
+Nov 16, 2022 12:53:04 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [187] #5996 | name=mikenimer-playground:create_bug_2.test-table-5996 | thread=19
+com.google.cloud.bigquery.BigQueryException: Exceeded rate limits: too many api requests per user per method for this user_method. For more information, see https://cloud.google.com/bigquery/docs/troubleshoot-quotas
+
+
+==============================================
+
+20/s - 8476
+
+....
+Nov 16, 2022 1:32:10 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+...
+INFO: [177] #8445 | name=mikenimer-playground:create_bug_4.test-table-8445 | thread=23
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [128] #8451 | name=mikenimer-playground:create_bug_4.test-table-8451 | thread=17
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [152] #8449 | name=mikenimer-playground:create_bug_4.test-table-8449 | thread=25
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [217] #8450 | name=mikenimer-playground:create_bug_4.test-table-8450 | thread=15
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [130] #8453 | name=mikenimer-playground:create_bug_4.test-table-8453 | thread=19
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [146] #8452 | name=mikenimer-playground:create_bug_4.test-table-8452 | thread=14
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [150] #8455 | name=mikenimer-playground:create_bug_4.test-table-8455 | thread=15
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [159] #8456 | name=mikenimer-playground:create_bug_4.test-table-8456 | thread=21
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [209] #8454 | name=mikenimer-playground:create_bug_4.test-table-8454 | thread=18
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [139] #8457 | name=mikenimer-playground:create_bug_4.test-table-8457 | thread=15
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [164] #8459 | name=mikenimer-playground:create_bug_4.test-table-8459 | thread=19
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [170] #8458 | name=mikenimer-playground:create_bug_4.test-table-8458 | thread=18
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [239] #8460 | name=mikenimer-playground:create_bug_4.test-table-8460 | thread=22
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [140] #8463 | name=mikenimer-playground:create_bug_4.test-table-8463 | thread=25
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [155] #8465 | name=mikenimer-playground:create_bug_4.test-table-8465 | thread=17
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [168] #8462 | name=mikenimer-playground:create_bug_4.test-table-8462 | thread=18
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [229] #8464 | name=mikenimer-playground:create_bug_4.test-table-8464 | thread=24
+Nov 16, 2022 1:32:11 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [247] #8461 | name=mikenimer-playground:create_bug_4.test-table-8461 | thread=20
+...
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [132] #8470 | name=mikenimer-playground:create_bug_4.test-table-8470 | thread=23
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [158] #8469 | name=mikenimer-playground:create_bug_4.test-table-8469 | thread=25
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [168] #8467 | name=mikenimer-playground:create_bug_4.test-table-8467 | thread=22
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [172] #8466 | name=mikenimer-playground:create_bug_4.test-table-8466 | thread=14
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [201] #8468 | name=mikenimer-playground:create_bug_4.test-table-8468 | thread=18
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [150] #8471 | name=mikenimer-playground:create_bug_4.test-table-8471 | thread=22
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [150] #8472 | name=mikenimer-playground:create_bug_4.test-table-8472 | thread=17
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [159] #8474 | name=mikenimer-playground:create_bug_4.test-table-8474 | thread=20
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [163] #8473 | name=mikenimer-playground:create_bug_4.test-table-8473 | thread=24
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [123] #8475 | name=mikenimer-playground:create_bug_4.test-table-8475 | thread=23
+Nov 16, 2022 1:32:12 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [146] #8476 | name=mikenimer-playground:create_bug_4.test-table-8476 | thread=17
+com.google.cloud.bigquery.BigQueryException: Exceeded rate limits: too many api requests
+
+
+=================================
+5/s
+
+Nov 16, 2022 6:08:42 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [151] #9822 | name=mikenimer-playground:create_bug_5.test-table-9822 | thread=25
+Nov 16, 2022 6:08:43 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [127] #9823 | name=mikenimer-playground:create_bug_5.test-table-9823 | thread=18
+Nov 16, 2022 6:08:43 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [156] #9824 | name=mikenimer-playground:create_bug_5.test-table-9824 | thread=17
+Nov 16, 2022 6:08:43 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [185] #9825 | name=mikenimer-playground:create_bug_5.test-table-9825 | thread=23
+Nov 16, 2022 6:08:43 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [163] #9826 | name=mikenimer-playground:create_bug_5.test-table-9826 | thread=19
+Nov 16, 2022 6:08:43 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [181] #9827 | name=mikenimer-playground:create_bug_5.test-table-9827 | thread=21
+Nov 16, 2022 6:08:44 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [188] #9828 | name=mikenimer-playground:create_bug_5.test-table-9828 | thread=19
+Nov 16, 2022 6:08:44 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [165] #9829 | name=mikenimer-playground:create_bug_5.test-table-9829 | thread=20
+Nov 16, 2022 6:08:44 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [122] #9830 | name=mikenimer-playground:create_bug_5.test-table-9830 | thread=23
+Nov 16, 2022 6:08:44 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process
+INFO: [107] #9831 | name=mikenimer-playground:create_bug_5.test-table-9831 | thread=22
+Nov 16, 2022 6:08:44 PM com.mikenimer.swarm.globalsequence.CreateTablesBug$1 process

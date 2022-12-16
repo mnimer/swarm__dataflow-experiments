@@ -18,6 +18,9 @@
 package com.mikenimer.swarm.globalsequence;
 
 import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn;
+import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn2;
+import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn;
+import com.mikenimer.swarm.globalsequence.models.CalculatedBook;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -48,6 +51,10 @@ public class StarterPipeline {
         String getTopic();
         void setTopic(String value);
 
+        @Default.Integer(1)
+        Integer getWindow();
+        void setWindow(Integer value);
+
     }
 
 
@@ -68,19 +75,20 @@ public class StarterPipeline {
                 c.output( KV.of(c.element().getAttribute("groupKey"), c.element()) );
             }
         }))
-        .apply("reshuffle", Reshuffle.of())
 
-                /**
-        .apply("window", Window.<KV<String, PubsubMessage>>into(FixedWindows.of(Duration.standardSeconds(5)))
-                .triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
-                        .plusDelayOf(Duration.standardSeconds(5))))
-                .withAllowedLateness(Duration.standardSeconds(10))
-                .discardingFiredPanes())
-        .apply("group", GroupByKey.create())
-                 **/
+        // calculate book based on pending topics
+        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn()))
+        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn2()))
+        .apply("Calculate Book", ParDo.of(new DebugStateTimeWindowFn()))
 
-
-        .apply("Debug Logging", ParDo.of(new DebugGlobalWindowFn()));
+        //todo: Replace with a IO writer
+        .apply("Save Book", ParDo.of(new DoFn<CalculatedBook, CalculatedBook>() {
+            @ProcessElement
+            public void process(ProcessContext c){
+                //System.out.println(c.element().toString());
+                c.output(c.element());
+            }
+        }));
 
         p.run();
     }
