@@ -20,6 +20,7 @@ package com.mikenimer.swarm.globalsequence;
 import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn;
 import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn2;
 import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn;
+import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn2;
 import com.mikenimer.swarm.globalsequence.models.CalculatedBook;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
@@ -79,7 +80,7 @@ public class StarterPipeline {
         // calculate book based on pending topics
         //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn()))
         //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn2()))
-        .apply("Calculate Book", ParDo.of(new DebugStateTimeWindowFn()))
+        .apply("Calculate Book", ParDo.of(new DebugStateTimeWindowFn2()))
 
         //todo: Replace with a IO writer
         .apply("Save Book", ParDo.of(new DoFn<CalculatedBook, CalculatedBook>() {
