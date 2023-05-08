@@ -6,13 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="dataflow-window-experiments" />
+        <module name="dataflow-csv-parser-experiments" />
         <module name="dataflow-global-sequence-experiments" />
         <module name="dataflow-create-bq-tables-bug" />
+        <module name="dataflow-window-experiments" />
+        <module name="dataflow-bq-default-columns-experiments" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dataflow-bq-default-columns-experiments" target="11" />
       <module name="dataflow-create-bq-tables-bug" target="1.8" />
+      <module name="dataflow-csv-parser-experiments" target="1.8" />
       <module name="dataflow-global-sequence-experiments" target="1.8" />
       <module name="dataflow-window-experiments" target="1.8" />
     </bytecodeTargetLevel>

@@ -9,7 +9,7 @@ export type="<type of test>"
 mvn archetype:generate \
     -DarchetypeGroupId=org.apache.beam \
     -DarchetypeArtifactId=beam-sdks-java-maven-archetypes-starter \
-    -DarchetypeVersion=2.40.0 \
+    -DarchetypeVersion=2.46.0 \
     -Dversion="0.1" \
     -DgroupId=com.mikenimer.swarm \
     -DartifactId=dataflow-$type-experiments \
