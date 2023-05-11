@@ -50,35 +50,42 @@ public class FastCsvParserFn extends DoFn<PubsubMessage, String>  implements Ser
         log.info("[" +(System.currentTimeMillis()-start) +"ms] file downloaded | file=" +path);
         long start2 = System.currentTimeMillis();
 
-        CsvReader reader = CsvReader.builder()
-                .fieldSeparator(',')
-                .build(br);
+        try {
+            CsvReader reader = CsvReader.builder()
+                    .fieldSeparator(',')
+                    .build(br);
 
-        //parse and loop over the file with Apache Commons CSV parser
-        long rowCount = reader.stream().map((Function<CsvRow, Integer>) csvRow -> {
-            if( csvRow.getOriginalLineNumber() == 1){
-                //save header keys
-                headers.put(path, csvRow.getFields());
-                return 0;
-            }else {
-                try {
-                    List<String> h = headers.get(path);
-                    Map mFields = new HashMap();
-                    for (int i = 0; i < h.size(); i++) {
-                        mFields.put(h.get(i), csvRow.getField(i));
+            //parse and loop over the file with Apache Commons CSV parser
+            long rowCount = reader.stream().map((Function<CsvRow, Integer>) csvRow -> {
+                if (csvRow.getOriginalLineNumber() == 1) {
+                    //save header keys
+                    headers.put(path, csvRow.getFields());
+                    return 0;
+                } else {
+                    try {
+                        List<String> h = headers.get(path);
+                        Map mFields = new HashMap();
+                        for (int i = 0; i < h.size(); i++) {
+                            mFields.put(h.get(i), csvRow.getField(i));
+                        }
+
+                        c.output(mapper.writeValueAsString(mFields));
+                    } catch (Exception e) {
+                        log.error("error parsing record", csvRow.toString());
                     }
-
-                    c.output(mapper.writeValueAsString(mFields));
-                } catch (Exception e) {
-                    log.error("error parsing record", csvRow.toString());
+                    return 1;
                 }
-                return 1;
-            }
 
-        }).count();
+            }).count();
 
 
-        //log timing results
-        log.info("[" +(System.currentTimeMillis()-start2) +"ms] file parse completed | rows=" +rowCount);
+            //log timing results
+            log.info("[" +(System.currentTimeMillis()-start2) +"ms] file parse completed | rows=" +rowCount);
+        }finally {
+            br.close();
+            channel.close();
+        }
+
+
     }
 }

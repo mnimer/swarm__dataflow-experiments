@@ -3,7 +3,7 @@ package com.mikenimer.swarm.csvparser.parsers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.pubsub.v1.PubsubMessage;
-import com.mikenimer.swarm.csvparser.StarterPipeline;
+import com.mikenimer.swarm.csvparser.ApacheExamplePipeline;
 import org.apache.beam.sdk.io.FileSystems;
 import org.apache.beam.sdk.io.fs.MatchResult;
 import org.apache.beam.sdk.transforms.DoFn;
@@ -29,7 +29,7 @@ public class ApacheCsvParserFn  extends DoFn<PubsubMessage, String>  implements 
             PubsubMessage msg = c.element();
             //build gs://... path
             String path = "gs://" +msg.getAttributesOrThrow("bucketId") + "/" + msg.getAttributesOrThrow("objectId");
-            c.output(StarterPipeline.traceTag, "Start parsing | file=" +path);
+            c.output(ApacheExamplePipeline.traceTag, "Start parsing | file=" +path +" | Thread=" +Thread.currentThread().getId());
 
             //get metadata from gcs
             //we can use the java FileSystems library because it has support for gs:// paths in Beam
@@ -38,7 +38,7 @@ public class ApacheCsvParserFn  extends DoFn<PubsubMessage, String>  implements 
             ReadableByteChannel channel = FileSystems.open(md.get(0).resourceId());
             BufferedReader br = new BufferedReader(Channels.newReader(channel, "UTF-8"));
 
-            log.info("[" +(System.currentTimeMillis()-start) +"ms] file downloaded | file=" +path);
+            log.info("[" +(System.currentTimeMillis()-start) +"ms] file downloaded | file=" +path +" | Thread=" +Thread.currentThread().getId());
             long start2 = System.currentTimeMillis();
 
             //parse and loop over the file with Apache Commons CSV parser
@@ -53,11 +53,11 @@ public class ApacheCsvParserFn  extends DoFn<PubsubMessage, String>  implements 
             }
 
             //log timing results
-            String traceMessage = "[" +(System.currentTimeMillis()-start2) +"ms] file parse completed | rows=" +rowCount +" | file=" +path;
+            String traceMessage = "[" +(System.currentTimeMillis()-start2) +"ms] file parse completed | rows=" +rowCount +" | file=" +path +" | Thread=" +Thread.currentThread().getId();
             log.info(traceMessage);
-            c.output(StarterPipeline.traceTag, traceMessage);
+            c.output(ApacheExamplePipeline.traceTag, traceMessage);
         } catch (Exception ex){
-            c.output(StarterPipeline.errorTag, ex.getMessage());
+            c.output(ApacheExamplePipeline.errorTag, ex.getMessage());
         }
     }
 }

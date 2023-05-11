@@ -62,7 +62,7 @@ public class Csv100kTest implements Serializable {
 
         p.apply(Create.of(msg))
         .apply("transform", ParDo.of(new ApacheCsvParserFn())
-                .withOutputTags(StarterPipeline.mainTag, TupleTagList.of(StarterPipeline.traceTag).and(StarterPipeline.errorTag)));
+                .withOutputTags(ApacheExamplePipeline.mainTag, TupleTagList.of(ApacheExamplePipeline.traceTag).and(ApacheExamplePipeline.errorTag)));
 
         p.run();
     }

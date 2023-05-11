@@ -22,9 +22,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import com.mikenimer.swarm.csvparser.formatters.DestinationFormatterFn;
-import com.mikenimer.swarm.csvparser.parsers.ApacheCsvParserFn;
+import com.mikenimer.swarm.csvparser.parsers.FastCsvParserFn;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.schemas.transforms.Group;
 import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.values.*;
 import org.slf4j.Logger;
@@ -48,8 +49,8 @@ import java.util.Map;
  * --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE>
  * --runner=DataflowRunner
  */
-public class StarterPipeline {
-    private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
+public class ApacheExamplePipeline {
+    private static final Logger LOG = LoggerFactory.getLogger(ApacheExamplePipeline.class);
 
     public static TupleTag mainTag = new TupleTag<String>() {
     };
@@ -66,13 +67,40 @@ public class StarterPipeline {
         PCollection<PubsubMessage> messages = p.apply(Create.of(
                 getMockMessage("disney_csv/disney_12k.csv")
                 , getMockMessage("disney_csv/disney_100k.csv")
-                //, getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_100k.csv")
+                , getMockMessage("disney_csv/disney_100k.csv")
+                , getMockMessage("disney_csv/disney_100k.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
+                , getMockMessage("disney_csv/disney_1m.csv")
         ));
 
 
         //Read and Parse CSV files from GCS
         PCollectionTuple parsedMessages = (PCollectionTuple) messages
-                .apply("read & parse", ParDo.of(new ApacheCsvParserFn())
+                .apply("read & parse", ParDo.of(new FastCsvParserFn())
                         .withOutputTags(mainTag, TupleTagList.of(traceTag).and(errorTag)));
 
 
@@ -84,7 +112,7 @@ public class StarterPipeline {
 
         //Send CSV rows to Writer
         //TODO: replace with IO Writer
-        formattedMessages.get(mainTag).apply("", ParDo.of(new DoFn<String, String>() {
+        parsedMessages.get(mainTag).apply("", ParDo.of(new DoFn<String, String>() {
             @ProcessElement
             public void processElement(ProcessContext c) {
                 //LOG.info("mainTag: " + c.element());
@@ -100,6 +128,7 @@ public class StarterPipeline {
                     @ProcessElement
                     public void processElement(ProcessContext c) {
                         LOG.info("traceTag: " + c.element());
+                        // Save in DataStore
                     }
                 }));
 
@@ -112,6 +141,7 @@ public class StarterPipeline {
                     @ProcessElement
                     public void processElement(ProcessContext c) {
                         LOG.info("error Tag: " + c.element());
+                        //Save in Datastore
                     }
                 }));
 

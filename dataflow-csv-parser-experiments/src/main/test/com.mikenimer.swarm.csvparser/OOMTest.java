@@ -3,10 +3,8 @@ package com.mikenimer.swarm.csvparser;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
-import com.mikenimer.swarm.csvparser.parsers.ApacheCsvParserFn;
-import com.mikenimer.swarm.csvparser.parsers.BufferedReaderParserFn;
-import com.mikenimer.swarm.csvparser.parsers.FastCsvParserFn;
-import com.mikenimer.swarm.csvparser.parsers.SimpleFlatMapperParserFn;
+import com.mikenimer.swarm.csvparser.orig.ApacheCvsBytesFn;
+import com.mikenimer.swarm.csvparser.orig.ReadFullyFn;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.DoFn;
@@ -20,22 +18,22 @@ import org.junit.runner.RunWith;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.mikenimer.swarm.csvparser.ApacheExamplePipeline.mainTag;
-
+import static com.mikenimer.swarm.csvparser.ApacheExamplePipeline.*;
 
 @RunWith(org.junit.runners.JUnit4.class)
-public class Csv1mTest implements Serializable {
+public class OOMTest implements Serializable {
 
     @Rule
     public final transient TestPipeline p = TestPipeline.create();
 
 
+
     @Test
-    public void testBufferedReader(){
+    public void test12kCsv(){
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "disney_csv/disney_100k.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -43,19 +41,22 @@ public class Csv1mTest implements Serializable {
                 .build();
 
 
-        p.apply(Create.of(msg))
-                .apply("transform", ParDo.of(new BufferedReaderParserFn()));
+        PCollectionTuple bytesTuple = (PCollectionTuple)p.apply(Create.of(msg))
+                .apply("read file", ParDo.of(new ReadFullyFn()).withOutputTags(mainTag, TupleTagList.of(traceTag).and(errorTag)));
+
+        bytesTuple.get(mainTag).apply("transform", ParDo.of(new ApacheCvsBytesFn())
+                .withOutputTags(mainTag, TupleTagList.of(ApacheExamplePipeline.traceTag).and(ApacheExamplePipeline.errorTag)));
 
         p.run();
     }
 
 
     @Test
-    public void testApacheCsv(){
+    public void test100kCsv(){
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "disney_csv/disney_100k.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -63,9 +64,11 @@ public class Csv1mTest implements Serializable {
                 .build();
 
 
-        PCollectionTuple csvTuple = (PCollectionTuple) p.apply(Create.of(msg))
-        .apply("transform", ParDo.of(new ApacheCsvParserFn())
-                .withOutputTags(ApacheExamplePipeline.mainTag, TupleTagList.of(ApacheExamplePipeline.traceTag).and(ApacheExamplePipeline.errorTag)));
+        PCollectionTuple bytesTuple = (PCollectionTuple)p.apply(Create.of(msg))
+                .apply("read file", ParDo.of(new ReadFullyFn()).withOutputTags(mainTag, TupleTagList.of(traceTag).and(errorTag)));
+
+        PCollectionTuple csvTuple = (PCollectionTuple)bytesTuple.get(mainTag).apply("transform", ParDo.of(new ApacheCvsBytesFn())
+                .withOutputTags(mainTag, TupleTagList.of(ApacheExamplePipeline.traceTag).and(ApacheExamplePipeline.errorTag)));
 
         csvTuple.get(mainTag).apply("debug", ParDo.of(new DoFn<String, Void>() {
             @ProcessElement
@@ -77,8 +80,9 @@ public class Csv1mTest implements Serializable {
         p.run();
     }
 
+
     @Test
-    public void testFastCsvParser(){
+    public void test1mCsv(){
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
@@ -90,27 +94,11 @@ public class Csv1mTest implements Serializable {
                 .build();
 
 
-        p.apply(Create.of(msg))
-        .apply("transform", ParDo.of(new FastCsvParserFn()));
+        PCollectionTuple bytesTuple = (PCollectionTuple)p.apply(Create.of(msg))
+                .apply("read file", ParDo.of(new ReadFullyFn()).withOutputTags(mainTag, TupleTagList.of(traceTag).and(errorTag)));
 
-        p.run();
-    }
-
-    @Test
-    public void testSimpleFlatMapperParser(){
-        Map<String, String> attribs = ImmutableMap.of(
-                "eventType", "OBJECT_FINALIZE",
-                "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
-
-        PubsubMessage msg = PubsubMessage.newBuilder()
-                .setData(ByteString.EMPTY)
-                .putAllAttributes(attribs)
-                .build();
-
-
-        p.apply(Create.of(msg))
-        .apply("transform", ParDo.of(new SimpleFlatMapperParserFn()));
+        bytesTuple.get(mainTag).apply("transform", ParDo.of(new ApacheCvsBytesFn())
+                .withOutputTags(mainTag, TupleTagList.of(ApacheExamplePipeline.traceTag).and(ApacheExamplePipeline.errorTag)));
 
         p.run();
     }

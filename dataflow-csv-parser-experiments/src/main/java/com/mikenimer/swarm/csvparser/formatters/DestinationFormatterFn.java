@@ -1,6 +1,6 @@
 package com.mikenimer.swarm.csvparser.formatters;
 
-import com.mikenimer.swarm.csvparser.StarterPipeline;
+import com.mikenimer.swarm.csvparser.ApacheExamplePipeline;
 import org.apache.beam.sdk.transforms.DoFn;
 
 public class DestinationFormatterFn extends DoFn<String, String> {
@@ -13,7 +13,7 @@ public class DestinationFormatterFn extends DoFn<String, String> {
             String row = c.element();
             c.output(row);
         }catch (Exception ex){
-            c.output(StarterPipeline.errorTag, ex.getMessage());
+            c.output(ApacheExamplePipeline.errorTag, ex.getMessage());
         }
     }
 }
