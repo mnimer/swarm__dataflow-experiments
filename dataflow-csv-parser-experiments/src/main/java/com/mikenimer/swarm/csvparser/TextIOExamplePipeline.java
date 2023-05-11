@@ -125,7 +125,7 @@ public class TextIOExamplePipeline {
                         c.output(c.element().getValue());
                     }
                 }));
-                 **/
+                 */
 
         p.run();
     }

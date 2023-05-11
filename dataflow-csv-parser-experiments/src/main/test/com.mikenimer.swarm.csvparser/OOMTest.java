@@ -33,7 +33,7 @@ public class OOMTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_100k.csv");
+                "objectId", "mock_csv_experiments/mock_100k.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -56,7 +56,7 @@ public class OOMTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_100k.csv");
+                "objectId", "mock_csv_experiments/mock_100k.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -86,7 +86,7 @@ public class OOMTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "mock_csv_experiments/mock_1m.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)

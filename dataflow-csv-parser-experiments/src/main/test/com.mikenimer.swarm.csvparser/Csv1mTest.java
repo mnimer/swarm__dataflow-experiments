@@ -35,7 +35,7 @@ public class Csv1mTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "mock_csv_experiments/mock_1m.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -55,7 +55,7 @@ public class Csv1mTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "mock_csv_experiments/mock_1m.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -82,7 +82,7 @@ public class Csv1mTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "mock_csv_experiments/mock_1m.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)
@@ -101,7 +101,7 @@ public class Csv1mTest implements Serializable {
         Map<String, String> attribs = ImmutableMap.of(
                 "eventType", "OBJECT_FINALIZE",
                 "bucketId", "sample-databases",
-                "objectId", "disney_csv/disney_1m.csv");
+                "objectId", "mock_csv_experiments/mock_1m.csv");
 
         PubsubMessage msg = PubsubMessage.newBuilder()
                 .setData(ByteString.EMPTY)

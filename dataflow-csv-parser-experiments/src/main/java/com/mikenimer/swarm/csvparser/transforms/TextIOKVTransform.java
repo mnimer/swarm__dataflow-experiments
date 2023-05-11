@@ -27,7 +27,7 @@ public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFil
     @Override
     public PCollection<KV<String, String>> expand(PCollection<FileIO.ReadableFile> input) {
         PCollectionView<String> fileView = getFileName(input);
-        PCollectionView<String> headerRow = getHeaderRow(input);
+        //PCollectionView<String> headerRow = getHeaderRow(input);
 
         return input
                 .apply("window name", Window.into(new GlobalWindows()))
@@ -38,7 +38,8 @@ public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFil
                         try {
 
                             String name = c.sideInput(fileView);
-                            String header = c.sideInput(headerRow);
+                            String header = "TRANSACTION_NUMBER,STORE_NUMBER,STORE_DESCRIPTION,BUSINESS_DATE,TRANSACTION_DATE_TIME,TRANSACTION_SALES_TYPE,GRC_VPN,ITEM_CODE,ITEM_DESCRIPTION,STYLE_CODE,STYLE_DESCRIPTION,LOCAL_CURRENCY,SALES_UNITS,SALES_PRICE_LC,SALES_PRICE_US,SALES_RETAIL_LC,SALES_RETAIL_US,COST_LC,COST_US,CURRENT_RETAIL_PRICE_US,LINE";
+                            //String header = c.sideInput(headerRow);
                             Map<String, String> row = new HashMap<>();
                             ObjectMapper mapper = new ObjectMapper();
 
@@ -60,8 +61,8 @@ public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFil
                         }
                     }
                 })
-                .withSideInput("name", fileView)
-                .withSideInput("header", headerRow));
+                .withSideInput("name", fileView));
+                //.withSideInput("header", headerRow));
     }
 
     /**
