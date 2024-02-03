@@ -21,11 +21,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.mikenimer.swarm</groupId>
-  <artifactId>dataflow-global-sequence-experiments</artifactId>
+  <artifactId>dataflow-bigquery-jdbc</artifactId>
   <version>0.1</version>
 
   <properties>
-    <beam.version>2.40.0</beam.version>
+    <beam.version>2.53.0</beam.version>
 
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-exec-plugin.version>1.6.0</maven-exec-plugin.version>
@@ -86,9 +86,10 @@
       <version>${beam.version}</version>
     </dependency>
 
+
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-sdks-java-io-jms</artifactId>
+      <artifactId>beam-sdks-java-io-jdbc</artifactId>
       <version>${beam.version}</version>
     </dependency>
 

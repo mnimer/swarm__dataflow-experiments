@@ -15,25 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mikenimer.swarm.globalsequence;
+package com.mikenimer.swarm.windows;
 
-import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn;
-import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn2;
-import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn;
-import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn2;
-import com.mikenimer.swarm.globalsequence.models.CalculatedBook;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
-import org.apache.beam.sdk.io.jms.JmsIO;
-import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.Reshuffle;
+import org.apache.beam.sdk.transforms.windowing.FixedWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +45,9 @@ public class StarterPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
 
     public interface JobOptions extends GcpOptions {
+
         String getTopic();
         void setTopic(String value);
-
-        @Default.Integer(1)
-        Integer getWindow();
-        void setWindow(Integer value);
-
     }
 
 
@@ -78,22 +69,14 @@ public class StarterPipeline {
             }
         }))
 
-        // calculate book based on pending topics
-        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn()))
-        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn2()))
-        .apply("Calculate Book", ParDo.of(new DebugStateTimeWindowFn2()))
+        .apply("window", Window.<KV<String, PubsubMessage>>into(FixedWindows.of(Duration.standardSeconds(5))))
+        .apply("group", GroupByKey.create());
 
-        //todo: Replace with a IO writer
-        .apply("Save Book", ParDo.of(new DoFn<CalculatedBook, CalculatedBook>() {
-            @ProcessElement
-            public void process(ProcessContext c){
-                //System.out.println(c.element().toString());
-                c.output(c.element());
-            }
-        }));
+        //.apply("Debug Logging", ParDo.of(new DebugWindowFn()));
 
         p.run();
     }
+
 
 
 }

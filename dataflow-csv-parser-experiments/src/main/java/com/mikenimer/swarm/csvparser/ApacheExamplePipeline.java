@@ -65,36 +65,36 @@ public class ApacheExamplePipeline {
 
         //TODO: replace with PubSubIO
         PCollection<PubsubMessage> messages = p.apply(Create.of(
-                getMockMessage("mock_csv_experiments/mock-10k.csv")
-                , getMockMessage("mock_csv_experiments/mock_100k.csv")
-                , getMockMessage("mock_csv_experiments/mock_100k.csv")
-                , getMockMessage("mock_csv_experiments/mock_100k.csv")
-                , getMockMessage("mock_csv_experiments/mock_100k.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
-                , getMockMessage("mock_csv_experiments/mock_1m.csv")
+                getMockMessage("mock_csv_experiments/mock-10k.csv"),
+                getMockMessage("mock_csv_experiments/mock_100k.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_100k.csv"),
+                getMockMessage("mock_csv_experiments/mock_100k.csv"),
+                getMockMessage("mock_csv_experiments/mock_100k.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv"),
+                getMockMessage("mock_csv_experiments/mock_1m.csv")
         ));
 
 

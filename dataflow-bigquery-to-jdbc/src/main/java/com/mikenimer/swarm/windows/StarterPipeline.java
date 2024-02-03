@@ -15,27 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mikenimer.swarm.globalsequence;
+package com.mikenimer.swarm.windows;
 
-import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn;
-import com.mikenimer.swarm.globalsequence.fn.DebugGlobalWindowFn2;
-import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn;
-import com.mikenimer.swarm.globalsequence.fn.DebugStateTimeWindowFn2;
-import com.mikenimer.swarm.globalsequence.models.CalculatedBook;
+import com.google.api.services.bigquery.model.TableReference;
+import com.google.api.services.bigquery.model.TableRow;
+import com.mikenimer.swarm.windows.transforms.JdbcWriter;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
-import org.apache.beam.sdk.io.jms.JmsIO;
-import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.io.jdbc.JdbcIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.Reshuffle;
+import org.apache.beam.sdk.transforms.windowing.FixedWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * Test different window configurations against pubsub
@@ -49,17 +56,6 @@ import org.slf4j.LoggerFactory;
 public class StarterPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(StarterPipeline.class);
 
-    public interface JobOptions extends GcpOptions {
-        String getTopic();
-        void setTopic(String value);
-
-        @Default.Integer(1)
-        Integer getWindow();
-        void setWindow(Integer value);
-
-    }
-
-
     public static void main(String[] args) {
         JobOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(JobOptions.class);
 
@@ -68,32 +64,22 @@ public class StarterPipeline {
 
     private static void build(JobOptions options) {
         Pipeline p = Pipeline.create(options);
-        String topic = "projects/" +options.getProject() +"/topics/" +options.getTopic();
 
-        p.apply("Read Messages", PubsubIO.readMessagesWithAttributes().fromTopic(topic))
-        .apply("assign key", ParDo.of(new DoFn<PubsubMessage, KV<String, PubsubMessage>>() {
+        String[] parts = options.getBqTable().split("\\.");
+
+        TableReference tableRef = new TableReference().setProjectId(parts[0]).setDatasetId(parts[1]).setTableId(parts[2]);
+        p.apply("Read Table Data", BigQueryIO.readTableRowsWithSchema().from(tableRef).withSelectedFields(Arrays.asList(options.getBqColumnList())))
+        .apply("log", ParDo.of(new DoFn<TableRow, TableRow>() {
             @ProcessElement
             public void process(ProcessContext c){
-                c.output( KV.of(c.element().getAttribute("groupKey"), c.element()) );
-            }
-        }))
-
-        // calculate book based on pending topics
-        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn()))
-        //.apply("Calculate Book", ParDo.of(new DebugGlobalWindowFn2()))
-        .apply("Calculate Book", ParDo.of(new DebugStateTimeWindowFn2()))
-
-        //todo: Replace with a IO writer
-        .apply("Save Book", ParDo.of(new DoFn<CalculatedBook, CalculatedBook>() {
-            @ProcessElement
-            public void process(ProcessContext c){
-                //System.out.println(c.element().toString());
                 c.output(c.element());
             }
-        }));
+            }))
+        .apply("Write to db", new JdbcWriter(options));
 
         p.run();
     }
+
 
 
 }

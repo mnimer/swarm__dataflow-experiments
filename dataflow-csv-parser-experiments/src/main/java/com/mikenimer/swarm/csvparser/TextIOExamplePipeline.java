@@ -68,9 +68,9 @@ public class TextIOExamplePipeline {
 
         //TODO: replace with PubSubIO
         PCollection<PubsubMessage> messages = p.apply(Create.of(
-                getMockMessage("mock_csv_experiments/mock-10k.csv"),
-                getMockMessage("mock_csv_experiments/mock_100k.csv"),
-                getMockMessage("mock_csv_experiments/mock_1m.csv")
+                getMockMessage("mock_csv_experiments/mock-10.csv"),
+                getMockMessage("mock_csv_experiments/mock-10k.csv")
+//                getMockMessage("mock_csv_experiments/mock_1m.csv"),
 //                getMockMessage("mock_csv_experiments/mock_100k.csv"),
 //                getMockMessage("mock_csv_experiments/mock_100k.csv"),
 //                getMockMessage("mock_csv_experiments/mock_100k.csv"),
@@ -111,9 +111,9 @@ public class TextIOExamplePipeline {
                 }))
                 .apply("Match all files", FileIO.matchAll())
                 .apply("Read all files", FileIO.readMatches())
-                .apply("Read lines", TextIO.readFiles());
+                //.apply("Read lines", TextIO.readFiles());
 
-                /** todo: Works with DirectRunner but not with DataflowRunner
+                /** todo: Works with DirectRunner but not with DataflowRunner */
                 .apply("read lines", new TextIOKVTransform())
 
                 //Send CSV rows to Writer
@@ -125,7 +125,6 @@ public class TextIOExamplePipeline {
                         c.output(c.element().getValue());
                     }
                 }));
-                 */
 
         p.run();
     }
