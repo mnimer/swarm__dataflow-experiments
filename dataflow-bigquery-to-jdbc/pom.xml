@@ -99,6 +99,14 @@
       <version>${beam.version}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-alloydb -->
+<dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-alloydb</artifactId>
+    <version>0.1.0</version>
+</dependency>
+
+
     <!--
       By default, the starter project has a dependency on the Beam DirectRunner
       to enable development and testing of pipelines. To run on another of the

@@ -6,7 +6,7 @@
   packages = [
     pkgs.jdk21
     pkgs.maven
-#    pkgs.google-cloud-sdk
+    pkgs.google-cloud-sdk
 #    pkgs.terraform
   ];
   # Sets environment variables in the workspace
@@ -14,6 +14,7 @@
   # search for the extension on https://open-vsx.org/ and use "publisher.id"
   idx.extensions = [
     "vscjava.vscode-java-pack"
+    "googlecloudtools.cloudcode"
   ];
   # preview configuration, identical to monospace.json
   idx.previews = {
