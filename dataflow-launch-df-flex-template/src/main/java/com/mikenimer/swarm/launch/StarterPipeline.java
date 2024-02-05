@@ -68,7 +68,7 @@ public class StarterPipeline {
 
         p.apply("Read Messages", Create.of(KV.of("table","bigquery-public-data.baseball.schedules"), KV.of("table","bigquery-public-data.baseball.games_post_wide")))
         //todo: Slow this day, every few minutes should be good.
-        .apply("Window", Window.<KV<String, String>>into(FixedWindows.of(Duration.standardSeconds(10))))
+        .apply("Window", Window.<KV<String, String>>into(FixedWindows.of(Duration.standardMinutes(1))))
         .apply(GroupIntoBatches.ofSize(25))
         .apply("launch", ParDo.of(new DoFn<KV<String, Iterable<String>>,String>() {
             @ProcessElement
