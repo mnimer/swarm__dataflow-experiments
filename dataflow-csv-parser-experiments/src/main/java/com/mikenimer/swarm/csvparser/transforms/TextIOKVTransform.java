@@ -1,13 +1,8 @@
 package com.mikenimer.swarm.csvparser.transforms;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mikenimer.swarm.csvparser.parsers.ApacheCsvParserFn;
-import org.apache.beam.sdk.io.Compression;
+import java.util.List;
+
 import org.apache.beam.sdk.io.FileIO;
-import org.apache.beam.sdk.io.ReadAllViaFileBasedSource;
-import org.apache.beam.sdk.io.TextIO;
-import org.apache.beam.sdk.io.fs.EmptyMatchTreatment;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -20,9 +15,7 @@ import org.apache.beam.sdk.values.PCollectionView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.mikenimer.swarm.csvparser.parsers.ApacheCsvParserFn;
 
 public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFile>, PCollection<KV<String, String>>> {
 
@@ -34,8 +27,10 @@ public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFil
         PCollectionView<List<String>> fileView = getFileName(input);
         PCollectionView<List<String>> headerRow = getHeaderRow(input);
 
+        return null;
+        /**
         return input
-                .apply("read lines", TextIO.read().from()) //67108864
+                .apply("read lines", TextIO.read().from("gs://todo")) //67108864
                 .apply("convert to KV", ParDo.of(new DoFn<String, KV<String, String>>() {
                     @ProcessElement
                     public void process(ProcessContext c){
@@ -66,6 +61,8 @@ public class TextIOKVTransform extends PTransform<PCollection<FileIO.ReadableFil
                 })
                 .withSideInput("name", fileView)
                 .withSideInput("header", headerRow));
+
+                 */
     }
 
     /**

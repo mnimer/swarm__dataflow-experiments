@@ -1,0 +1,44 @@
+{
+    "name": "dataflow-bigquery-to-jdbc",
+    "description": "TODO set the name, description, and parameters to match JobOptions",
+    "parameters": [
+      {
+        "name": "bqTable",
+        "label": "bq table name",
+        "helpText": "bq table name",
+        "isOptional": false
+      },
+      {
+        "name": "destDatabase",
+        "label": "Jdbc Dataset to write tables to",
+        "helpText": "db name",
+        "isOptional": false
+      },
+      {
+        "name": "driver",
+        "label": "Jdbc driver",
+        "helpText": "driver class name",
+        "isOptional": false
+      },
+      {
+        "name": "url",
+        "label": "JDBC url",
+        "helpText": "jdbc url",
+        "isOptional": false
+      },
+      {
+        "name": "username",
+        "label": "db username",
+        "helpText": "username",
+        "isOptional": false
+      },
+      {
+        "name": "password",
+        "label": "db password",
+        "helpText": "password",
+        "isOptional": false
+      }
+
+    ]
+  }
+  

@@ -1,0 +1,21 @@
+{
+    "name": "dataflow-bigquery-to-jdbc",
+    "description": "TODO set the name, description, and parameters to match JobOptions",
+    "parameters": [
+      {
+        "name": "subscription",
+        "label": "PubSub subscription",
+        "helpText": "subscription name",
+        "isOptional": true
+      },
+      
+      {
+        "name": "flexTemplace",
+        "label": "container image to deploy",
+        "helpText": "gcr.io/.../... path",
+        "isOptional": true
+      }
+
+    ]
+  }
+  
